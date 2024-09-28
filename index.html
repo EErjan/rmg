@@ -61,7 +61,7 @@
 				       aria-required="true"
 				>
 
-				<div class="error-message">
+				<div v-if="errorMessage?.length" class="error-message">
 					{{ errorMessage }}
 				</div>
 			</div>
