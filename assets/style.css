@@ -144,8 +144,8 @@ input {
     font-weight: 500;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
     .pin-code-document img {
-        max-width: 200px;
+        max-width: 220px;
     }
 }
