@@ -8,6 +8,7 @@ body {
     display: flex;
     align-items: center;
     flex-direction: column;
+    padding-bottom: 60px;
 }
 
 .header {
@@ -84,6 +85,7 @@ input {
 .repo_qr_info.qr_blue {
     color: #3877B0;
 }
+
 .repo_qr_info {
     font-weight: 500;
     line-height: 16px;
@@ -116,6 +118,7 @@ input {
     font-size: 14px;
     color: #a94442;
 }
+
 .collapse-menu-wrap {
     position: absolute;
     top: 100%;
@@ -139,4 +142,10 @@ input {
 .collapse-menu button {
     color: #3877B0;
     font-weight: 500;
+}
+
+@media (max-width: 500px) {
+    .pin-code-document img {
+        max-width: 200px;
+    }
 }
