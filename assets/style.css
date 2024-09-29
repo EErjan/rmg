@@ -116,6 +116,10 @@ input {
     backdrop-filter: blur(5px);
 }
 
+.error {
+    color: #a94442;
+}
+
 .error-message {
     display: none;
     margin-top: 10px;
@@ -152,6 +156,29 @@ input {
     color: #3877B0;
     font-weight: 500;
 }
+
+.container {
+    padding: 0 29px!important;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+
+
+
+
+
 
 @media (max-width: 550px) {
     .pin-code-document img {

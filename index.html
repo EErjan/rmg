@@ -19,7 +19,7 @@
 			<img src="./assets/images/logo_mobile.png" alt="">
 		</a>
 
-		<button type="button" class="mobile-menu__btn btn btn-primary btn-sm"
+		<button type="button" class="mobile-menu__btn btn btn-sm"
 		        data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"
 		        aria-controls="collapseExample"
 		>
@@ -37,14 +37,15 @@
 
 	<div class="container">
 
-
-		<div class="alert alert-warning" role="alert">
+		<div class="alert alert-warning alert-dismissible fade show" role="alert">
 			Ushbu hujjatdan foydalanish uchun siz avtorizatsiyadan o’tishingiz yoki, PIN kodini kiritishingiz lozim.
 			<a
 					href="https://id.egov.uz/">
 				Avtorizatsiyadan o’tish uchun bu yerga bosing
 			</a>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
+
 
 		<h3 class="repo_qr_info">
 			Введите PIN-код для просмотра документа
@@ -52,8 +53,10 @@
 
 		<div class="pinForm">
 			<div class="form-group required">
-				<label class="control-label">ПИН код</label>
-				<input type="number"
+				<label class="control-label"
+				       :class="{error: errorMessage?.length}"
+				>ПИН код</label>
+				<input type="text"
 				       data-mask='yyyy'
 				       v-model="pinCode"
 				       class="form-control maska"
@@ -61,29 +64,18 @@
 				       aria-required="true"
 				>
 
-				<div :class="['error-message', { active: errorMessage?.length }]">
+				<div :class="{ active: isActive }"
+				     class="error-message"
+				>
 					{{ errorMessage }}
 				</div>
+
 			</div>
 
 			<div class="d-grid mb-4">
-				<!--				<a v-if="pinCode === 5422"-->
-				<!--				   href="./assets/file.pdf"-->
-				<!--				   type="submit"-->
-				<!--				   download=""-->
-				<!--				   class="btn btn-success pull-center"-->
-				<!--				>Ochish</a>-->
-
-				<a @click="clickButton()"
-				   :href="pinCode === 5422 ? './assets/file.pdf' : '#'"
-				   type="submit"
-				   download=""
-				   class="btn btn-success pull-center"
-				>Ochish</a>
-
-				<!--				<button @click="wrongPinCode()" v-else class="-->
-				<!--				btn btn-success pull-center">Ochish</button>-->
-
+				<div @click="checkPinCode()" class="btn btn-success pull-center">
+					Ochish
+				</div>
 			</div>
 		</div>
 
@@ -107,26 +99,72 @@
 
 
 <script>
-	const {createApp, ref} = Vue
+	const {createApp, ref, onMounted} = Vue
 	createApp({
 		setup() {
-			const isPageLoaded = ref(false);
-			const errorMessage = ref(null)
+			const errorMessage = ref('')
 			const pinCode = ref(null); // Make pinCode reactive using ref
+			const isActive = ref(false);
+			const currentUser = ref({
+				id: "",
+				path: ""
+			})
+			const userList = ref([
+				{
+					id: "5422",
+					path: "./assets/file.pdf"
+				},
+				{
+					id: "5455",
+					path: "./assets/file-new.pdf"
+				}
+			]);
 
-			window.onload = () => {
-				setTimeout(() => {
-					isPageLoaded.value = true; // Set flag to show the content
-				}, 500)
+
+			onMounted(() => {
+				isActive.value = false;
+				errorMessage.value = ""
+			});
+
+			const checkPinCode = () => {
+				const isPinCodeValid = pinCode.value?.length === 4;
+
+				if (!isPinCodeValid) {
+					return wrongPinCode();
+				}
+
+				const foundUser = userList.value.find(user => user.id === pinCode.value);
+
+				if (!foundUser) {
+					return console.log('User not found');
+				}
+
+				// Update currentUser with the found user's details
+				currentUser.value = {
+					id: foundUser.id,
+					path: foundUser.path
+				};
+
+				console.log(currentUser.value, "val");
+
+				// Initiate the download after user is found
+				downloadFile();
 			};
 
-			const clickButton = (event) => {
-				if (pinCode.value != 5422) {
-					wrongPinCode()
+
+			const downloadFile = () => {
+				if (currentUser.value.path) {
+					const link = document.createElement('a');
+					link.href = currentUser.value.path; // The file path you want to download
+					link.download = ''; // This sets the file for download
+					link.click();
+				} else {
+					console.log('No file path available');
 				}
-			}
+			};
 
 			const wrongPinCode = () => {
+				isActive.value = true
 				errorMessage.value = "";
 
 				if (!pinCode.value?.length) {
@@ -141,11 +179,12 @@
 			};
 
 			return {
-				isPageLoaded,
 				pinCode,
 				errorMessage,
+				isActive,
 				wrongPinCode,
-				clickButton
+				checkPinCode,
+				downloadFile
 			};
 		}
 	}).mount('#app');
