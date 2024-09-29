@@ -122,6 +122,14 @@
 
 
 			onMounted(() => {
+				const urlParams = new URLSearchParams(window.location.search);
+				const hasQRAccess = urlParams.get('qr_access');
+
+				if (!hasQRAccess) {
+					// Redirect the user if the QR access token is missing
+					window.location.href = '/access-denied';
+				}
+
 				isActive.value = false;
 				errorMessage.value = ""
 			});
